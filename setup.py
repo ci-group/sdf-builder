@@ -6,7 +6,14 @@ setup(name='sdfbuilder',
       description='Pragmatic utility library for building SDF files',
       author='Elte Hupkes',
       author_email='elte@hupkes.org',
-      url='https://github.com/ElteHupkes/sdf-builder',
-      packages=['sdfbuilder', 'sdfbuilder.joint', 'sdfbuilder.sensor', 'sdfbuilder.math',
-                'sdfbuilder.physics', 'sdfbuilder.structure', 'sdfbuilder.util'],
-      install_requires=['numpy'])
+      url='https://github.com/ci-group/sdf-builder',
+      packages=['sdfbuilder',
+                'sdfbuilder.joint',
+                'sdfbuilder.math',
+                'sdfbuilder.physics',
+                'sdfbuilder.sensor',
+                'sdfbuilder.structure',
+                'sdfbuilder.util'
+               ],
+      install_requires=['numpy']
+     )
