@@ -35,5 +35,5 @@ class SDF(Element):
         :return:
         """
         body = super(SDF, self).render()
-        enc = (' encoding="%s"' % self.encoding) if self.encoding else ""
-        return ("<?xml version=\"1.0\"%s?>\n" % enc)+body
+        enc = (' encoding="{}"'.format(self.encoding)) if self.encoding else ""
+        return ("<?xml version=\"1.0\"{enc}?>\n".format(enc=enc)) + body

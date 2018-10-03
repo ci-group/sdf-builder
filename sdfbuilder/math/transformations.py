@@ -197,7 +197,6 @@ from __future__ import absolute_import
 from __future__ import division, print_function
 
 import math
-
 import numpy
 
 __version__ = '2015.03.19'
@@ -335,13 +334,13 @@ def rotation_matrix(angle, direction, point=None):
     R += numpy.array([[0.0, -direction[2], direction[1]],
                       [direction[2], 0.0, -direction[0]],
                       [-direction[1], direction[0], 0.0]])
-    M = numpy.identity(4)
-    M[:3, :3] = R
+    matrix = numpy.identity(4)
+    matrix[:3, :3] = R
     if point is not None:
         # rotation not around origin
         point = numpy.array(point[:3], dtype=numpy.float64, copy=False)
-        M[:3, 3] = point - numpy.dot(R, point)
-    return M
+        matrix[:3, 3] = point - numpy.dot(R, point)
+    return matrix
 
 
 def rotation_from_matrix(matrix):
@@ -375,11 +374,14 @@ def rotation_from_matrix(matrix):
     # rotation angle depending on direction
     cosa = (numpy.trace(R33) - 1.0) / 2.0
     if abs(direction[2]) > 1e-8:
-        sina = (R[1, 0] + (cosa - 1.0) * direction[0] * direction[1]) / direction[2]
+        sina = (R[1, 0] + (cosa - 1.0) * direction[0] * direction[1]) / \
+               direction[2]
     elif abs(direction[1]) > 1e-8:
-        sina = (R[0, 2] + (cosa - 1.0) * direction[0] * direction[2]) / direction[1]
+        sina = (R[0, 2] + (cosa - 1.0) * direction[0] * direction[2]) / \
+               direction[1]
     else:
-        sina = (R[2, 1] + (cosa - 1.0) * direction[1] * direction[2]) / direction[0]
+        sina = (R[2, 1] + (cosa - 1.0) * direction[1] * direction[2]) / \
+               direction[0]
     angle = math.atan2(sina, cosa)
     return angle, direction, point
 
@@ -762,7 +764,7 @@ def decompose_matrix(matrix):
     if not numpy.linalg.det(P):
         raise ValueError("matrix is singular")
 
-    scale = numpy.zeros((3, ))
+    scale = numpy.zeros((3,))
     shear = [0.0, 0.0, 0.0]
     angles = [0.0, 0.0, 0.0]
 
@@ -800,7 +802,7 @@ def decompose_matrix(matrix):
         angles[0] = math.atan2(row[1, 2], row[2, 2])
         angles[2] = math.atan2(row[0, 1], row[0, 0])
     else:
-        #angles[0] = math.atan2(row[1, 0], row[1, 1])
+        # angles[0] = math.atan2(row[1, 0], row[1, 1])
         angles[0] = math.atan2(-row[2, 1], row[1, 1])
         angles[2] = 0.0
 
@@ -1219,7 +1221,7 @@ def quaternion_from_euler(ai, aj, ak, axes='sxyz'):
     sc = si * ck
     ss = si * sk
 
-    q = numpy.empty((4, ))
+    q = numpy.empty((4,))
     if repetition:
         q[0] = cj * (cc - ss)
         q[i] = cj * (cs + sc)
@@ -1313,7 +1315,7 @@ def quaternion_from_matrix(matrix, isprecise=False):
     """
     M = numpy.array(matrix, dtype=numpy.float64, copy=False)[:4, :4]
     if isprecise:
-        q = numpy.empty((4, ))
+        q = numpy.empty((4,))
         t = numpy.trace(M)
         if t > M[3, 3]:
             q[0] = t
@@ -1343,10 +1345,12 @@ def quaternion_from_matrix(matrix, isprecise=False):
         m21 = M[2, 1]
         m22 = M[2, 2]
         # symmetric matrix K
-        K = numpy.array([[m00 - m11 - m22, 0.0, 0.0, 0.0],
-                         [m01 + m10, m11 - m00 - m22, 0.0, 0.0],
-                         [m02 + m20, m12 + m21, m22 - m00 - m11, 0.0],
-                         [m21 - m12, m02 - m20, m10 - m01, m00 + m11 + m22]])
+        K = numpy.array(
+            [[m00 - m11 - m22, 0.0, 0.0, 0.0],
+             [m01 + m10, m11 - m00 - m22, 0.0, 0.0],
+             [m02 + m20, m12 + m21, m22 - m00 - m11, 0.0],
+             [m21 - m12, m02 - m20, m10 - m01, m00 + m11 + m22]]
+        )
         K /= 3.0
         # quaternion is eigenvector of K that corresponds to largest eigenvalue
         w, V = numpy.linalg.eigh(K)
@@ -1366,10 +1370,13 @@ def quaternion_multiply(quaternion1, quaternion0):
     """
     w0, x0, y0, z0 = quaternion0
     w1, x1, y1, z1 = quaternion1
-    return numpy.array([-x1 * x0 - y1 * y0 - z1 * z0 + w1 * w0,
-                        x1 * w0 + y1 * z0 - z1 * y0 + w1 * x0,
-                        -x1 * z0 + y1 * w0 + z1 * x0 + w1 * y0,
-                        x1 * y0 - y1 * x0 + z1 * w0 + w1 * z0], dtype=numpy.float64)
+    return numpy.array(
+        [-x1 * x0 - y1 * y0 - z1 * z0 + w1 * w0,
+         x1 * w0 + y1 * z0 - z1 * y0 + w1 * x0,
+         -x1 * z0 + y1 * w0 + z1 * x0 + w1 * y0,
+         x1 * y0 - y1 * x0 + z1 * w0 + w1 * z0],
+        dtype=numpy.float64
+    )
 
 
 def quaternion_conjugate(quaternion):
@@ -1693,17 +1700,19 @@ def inverse_matrix(matrix):
 def concatenate_matrices(*matrices):
     """Return concatenation of series of transformation matrices.
 
-    >>> M = numpy.random.rand(16).reshape((4, 4)) - 0.5
-    >>> numpy.allclose(M, concatenate_matrices(M))
+    >>> matrix = numpy.random.rand(16).reshape((4, 4)) - 0.5
+    >>> numpy.allclose(matrix, concatenate_matrices(matrix))
     True
-    >>> numpy.allclose(numpy.dot(M, M.T), concatenate_matrices(M, M.T))
+    >>> numpy.allclose(
+    ...     numpy.dot(matrix, matrix.T),
+    ...     concatenate_matrices(matrix, matrix.T))
     True
 
     """
-    M = numpy.identity(4)
+    matrix = numpy.identity(4)
     for i in matrices:
-        M = numpy.dot(M, i)
-    return M
+        matrix = numpy.dot(matrix, i)
+    return matrix
 
 
 def is_same_transform(matrix0, matrix1):

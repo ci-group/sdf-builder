@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from .joint import Joint, Limit
 from ..util import number_format as nf
 
+
 class FixedJoint(Joint):
     """
     Implements a shortcut fixed joint; SDF currently does not support
@@ -16,7 +17,13 @@ class FixedJoint(Joint):
         :param child:
         :return:
         """
-        super(FixedJoint, self).__init__("revolute", parent, child, axis=axis, name=name)
+        super(FixedJoint, self).__init__(
+            joint_type="revolute",
+            parent=parent,
+            child=child,
+            axis=axis,
+            name=name
+        )
         self.axis.limit = Limit(lower=0, upper=0, effort=0, velocity=0)
         self.cfm = cfm
         self.erp = erp

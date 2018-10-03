@@ -45,7 +45,17 @@ class Inertial(Element):
     """
     TAG_NAME = 'inertial'
 
-    def __init__(self, mass=1.0, ixx=0, iyy=0, izz=0, ixy=0, ixz=0, iyz=0, **kwargs):
+    def __init__(
+            self,
+            mass=1.0,
+            ixx=0,
+            iyy=0,
+            izz=0,
+            ixy=0,
+            ixz=0,
+            iyz=0,
+            **kwargs
+    ):
         """
         :param mass:
         :param ixx:
@@ -69,16 +79,22 @@ class Inertial(Element):
         :return:
         """
         body = super(Inertial, self).render_body()
-        body += "<mass>%s</mass>" % nf(self.mass)
-        body += ("<inertia>"
-                 "<ixx>%s</ixx>"
-                 "<ixy>%s</ixy>"
-                 "<ixz>%s</ixz>"
-                 "<iyy>%s</iyy>"
-                 "<iyz>%s</iyz>"
-                 "<izz>%s</izz>"
-                 "</inertia>" % (nf(self.ixx), nf(self.ixy), nf(self.ixz),
-                                 nf(self.iyy), nf(self.iyz), nf(self.izz)))
+        body += "<mass>{mass}</mass>".format(mass=nf(self.mass))
+        body += ("<inertia>\n"
+                 "  <ixx>{ixx}</ixx>\n"
+                 "  <ixy>{ixy}</ixy>\n"
+                 "  <ixz>{ixz}</ixz>\n"
+                 "  <iyy>{iyy}</iyy>\n"
+                 "  <iyz>{iyz}</iyz>\n"
+                 "  <izz>{izz}</izz>\n"
+                 "</inertia>".format(
+            ixx=nf(self.ixx),
+            ixy=nf(self.ixy),
+            ixz=nf(self.ixz),
+            iyy=nf(self.iyy),
+            iyz=nf(self.iyz),
+            izz=nf(self.izz))
+        )
         return body
 
     @staticmethod
@@ -88,9 +104,15 @@ class Inertial(Element):
         :param m:
         :return:
         """
-        return Inertial(mass, ixx=m[0, 0], ixy=m[0, 1],
-                        ixz=m[0, 2], iyy=m[1, 1], iyz=m[1, 2],
-                        izz=m[2, 2])
+        return Inertial(
+            mass=mass,
+            ixx=m[0, 0],
+            ixy=m[0, 1],
+            ixz=m[0, 2],
+            iyy=m[1, 1],
+            iyz=m[1, 2],
+            izz=m[2, 2]
+        )
 
     def transformed(self, displacement, rotation):
         """
@@ -101,8 +123,12 @@ class Inertial(Element):
         :param rotation:
         :return:
         """
-        transformed = transform_inertia_tensor(self.mass, self.get_matrix(),
-                                               displacement, rotation)
+        transformed = transform_inertia_tensor(
+            mass=self.mass,
+            tensor=self.get_matrix(),
+            displacement=displacement,
+            rotation=rotation
+        )
         return self.from_mass_matrix(self.mass, transformed)
 
     def get_matrix(self):

@@ -18,7 +18,17 @@ class Joint(Posable):
     # Joint has a pose, but it is not in the parent frame
     PARENT_FRAME = False
 
-    def __init__(self, joint_type, parent, child, pose=None, axis=None, axis2=None, name=None, **kwargs):
+    def __init__(
+            self,
+            joint_type,
+            parent,
+            child,
+            pose=None,
+            axis=None,
+            axis2=None,
+            name=None,
+            **kwargs
+    ):
         """
         :param axis:
         :param axis2:
@@ -81,7 +91,13 @@ class Axis(Element):
     # an axis2, just override the property in init.
     TAG_NAME = "axis"
 
-    def __init__(self, axis=None, limit=None, use_parent_model_frame=False, **kwargs):
+    def __init__(
+            self,
+            axis=None,
+            limit=None,
+            use_parent_model_frame=False,
+            **kwargs
+    ):
         """
         :param axis:
         :type axis: Vector3
@@ -107,7 +123,11 @@ class Axis(Element):
 
         x, y, z = self.axis.x, self.axis.y, self.axis.z
         xyz = "<xyz>%s %s %s</xyz>" % (nf(x), nf(y), nf(z))
-        elements += [xyz, "<use_parent_model_frame>%d</use_parent_model_frame>" % self.use_parent_model_frame]
+        elements += [
+            xyz,
+            "<use_parent_model_frame>{}</use_parent_model_frame>".format(
+                self.use_parent_model_frame)
+        ]
 
         if self.limit:
             elements.append(self.limit)
@@ -149,9 +169,19 @@ class Limit(Element):
         """
         elements = super(Limit, self).render_elements()
 
-        for attr in ['lower', 'upper', 'effort', 'velocity', 'stiffness', 'dissipation']:
+        for attr in [
+            'lower',
+            'upper',
+            'effort',
+            'velocity',
+            'stiffness',
+            'dissipation'
+        ]:
             val = getattr(self, attr, None)
             if val is not None:
-                elements.append("<%s>%s</%s>" % (attr, nf(val), attr))
+                elements.append("<{tag}>{val}</{tag}>".format(
+                    tag=attr,
+                    val=nf(val)
+                ))
 
         return elements

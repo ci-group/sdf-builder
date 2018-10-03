@@ -63,12 +63,18 @@ class TestPosable(unittest.TestCase):
         # Now, position of the minibox
         roll, pitch, yaw = minibox.get_rotation().get_rpy()
         x, y, z = minibox.get_position()
-        self.assertAlmostEqual(x, 4.655811238272279, msg="Incorrect x position.")
-        self.assertAlmostEqual(y, 1.291709623134523, msg="Incorrect y position.")
-        self.assertAlmostEqual(z, 1.7256842193500852, msg="Incorrect z position.")
-        self.assertAlmostEqual(roll, -2.1377528428632186, msg="Incorrect roll.")
-        self.assertAlmostEqual(pitch, -0.6933926357494202, msg="Incorrect pitch.")
-        self.assertAlmostEqual(yaw, 1.0364317772632718, msg="Incorrect yaw.")
+        self.assertAlmostEqual(
+            x, 4.655811238272279, msg="Incorrect x position.")
+        self.assertAlmostEqual(
+            y, 1.291709623134523, msg="Incorrect y position.")
+        self.assertAlmostEqual(
+            z, 1.7256842193500852, msg="Incorrect z position.")
+        self.assertAlmostEqual(
+            roll, -2.1377528428632186, msg="Incorrect roll.")
+        self.assertAlmostEqual(
+            pitch, -0.6933926357494202, msg="Incorrect pitch.")
+        self.assertAlmostEqual(
+            yaw, 1.0364317772632718, msg="Incorrect yaw.")
 
         # Finally, position of link2
         roll, pitch, yaw = link2.get_rotation().get_rpy()
@@ -76,9 +82,12 @@ class TestPosable(unittest.TestCase):
         self.assertAlmostEqual(x, 0.5, msg="Incorrect x position.")
         self.assertAlmostEqual(y, 0.5, msg="Incorrect y position.")
         self.assertAlmostEqual(z, 2, msg="Incorrect z position.")
-        self.assertAlmostEqual(roll, 1.2199169159226388, msg="Incorrect roll.")
-        self.assertAlmostEqual(pitch, 0.24650585550379217, msg="Incorrect pitch.")
-        self.assertAlmostEqual(yaw, 1.2199169159226388, msg="Incorrect yaw.")
+        self.assertAlmostEqual(
+            roll, 1.2199169159226388, msg="Incorrect roll.")
+        self.assertAlmostEqual(
+            pitch, 0.24650585550379217, msg="Incorrect pitch.")
+        self.assertAlmostEqual(
+            yaw, 1.2199169159226388, msg="Incorrect yaw.")
 
 if __name__ == '__main__':
     unittest.main()

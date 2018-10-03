@@ -133,8 +133,7 @@ class CompoundGeometry(PosableGroup, BaseGeometry):
         Returns the inertia tensor for all the combined positioned
         geometries in this compound geometry.
 
-        Uses the first part of this question:
-        http://physics.stackexchange.com/questions/17336/how-do-you-combine-two-rigid-bodies-into-one
+        Uses the first part of this question: https://goo.gl/HRo35u
         """
         # Calculate the center of mass
         center_mass = self.get_center_of_mass()
@@ -156,7 +155,8 @@ class CompoundGeometry(PosableGroup, BaseGeometry):
             # out. Conceptually, we now start with the inertia tensor
             # as if the object has zero rotation, and calculate the tensor
             # resulting from rotating the object around its actual rotation.
-            rotation = self.get_rotation().conjugated() * geometry.get_rotation()
+            rotation = \
+                self.get_rotation().conjugated() * geometry.get_rotation()
             j1 = transform_inertia_tensor(
                 geometry.get_mass(),
                 geometry.get_inertial().get_matrix(),
@@ -172,8 +172,7 @@ class CompoundGeometry(PosableGroup, BaseGeometry):
 
 class Box(Geometry):
     """
-    Represents a box geometry, i.e.
-    a geometry *with* a box object
+    Represents a box geometry, i.e. a geometry *with* a box object
     """
     def __init__(self, x, y, z, mass=None, **kwargs):
         """
@@ -195,7 +194,11 @@ class Box(Geometry):
         elements = super(Box, self).render_elements()
 
         x, y, z = self.size
-        elements.append("<box><size>%s %s %s</size></box>" % (nf(x), nf(y), nf(z)))
+        elements.append("<box><size>{x} {y} {z}</size></box>".format(
+            x=nf(x),
+            y=nf(y),
+            z=nf(z)
+        ))
         return elements
 
     def get_inertial(self):
@@ -215,7 +218,15 @@ class Cylinder(Geometry):
     """
     Cylinder geometry
     """
-    def __init__(self, radius, length, mass=None, tube=False, r1=None, **kwargs):
+    def __init__(
+            self,
+            radius,
+            length,
+            mass=None,
+            tube=False,
+            r1=None,
+            **kwargs
+    ):
         """
         Cylinder geometry. The cylinder is defined as being a circle
         with the given radius in x / y directions, whilst having the
@@ -225,9 +236,10 @@ class Cylinder(Geometry):
         :type radius: float
         :param length: Length (z-direction)
         :type length: float
-        :param tube: If true, the inertial properties for this geometry will be those of a tube.
+        :param tube: If true, the inertial properties for this geometry will
+                    be those of a tube
         :type tube: bool
-        :param r1: If `tube` is true, the radius of the inner cylinder of the tube
+        :param r1: If `tube` is true, a radius of the inner cylinder of the tube
         :param kwargs:
         """
         super(Cylinder, self).__init__(mass=mass, **kwargs)
@@ -241,8 +253,13 @@ class Cylinder(Geometry):
         """
         elements = super(Cylinder, self).render_elements()
 
-        elements.append("<cylinder><radius>%s</radius><length>%s</length></cylinder>"
-                        % (nf(self.radius), nf(self.length)))
+        elements.append("<cylinder>\n"
+                        "  <radius>{radius}</radius>\n"
+                        "  <length>{length}</length>\n"
+                        "</cylinder>".format(
+            radius=nf(self.radius),
+            length=nf(self.length)
+        ))
         return elements
 
     def get_inertial(self):
@@ -252,7 +269,8 @@ class Cylinder(Geometry):
         """
         if self.tube:
             if self.r1 is None:
-                raise AttributeError("Tube inertia requires `r1` radius for cylinder.")
+                raise AttributeError(
+                    "Tube inertia requires `r1` radius for cylinder.")
 
             r = self.radius**2 + self.r1**2
         else:
@@ -261,7 +279,12 @@ class Cylinder(Geometry):
         mass = self.get_mass()
         ixx = (3 * r + self.length**2) * mass / 12.0
         izz = 0.5 * mass * r
-        return Inertial(mass=mass, ixx=ixx, iyy=ixx, izz=izz)
+        return Inertial(
+            mass=mass,
+            ixx=ixx,
+            iyy=ixx,
+            izz=izz
+        )
 
 
 class Sphere(Geometry):
@@ -273,7 +296,8 @@ class Sphere(Geometry):
         Create a new sphere geometry
         :param radius: (x and y directions)
         :type radius: float
-        :param solid: Whether this is a solid or hollow sphere, influences only inertia
+        :param solid: Whether this is a solid/hollow sphere it influences
+                      inertia
         :type solid: bool
         :param kwargs:
         """
@@ -288,8 +312,9 @@ class Sphere(Geometry):
         """
         elements = super(Sphere, self).render_elements()
 
-        elements.append("<sphere><radius>%s</radius></sphere>"
-                        % nf(self.radius))
+        elements.append("<sphere>\n"
+                        "  <radius>{radius}</radius>\n"
+                        "</sphere>".format(radius=nf(self.radius)))
         return elements
 
     def get_inertial(self):
@@ -299,7 +324,12 @@ class Sphere(Geometry):
         mass = self.mass
         frac = 5.0 if self.solid else 3.0
         ixx = (2 * mass * self.radius**2) / frac
-        return Inertial(mass=mass, ixx=ixx, iyy=ixx, izz=ixx)
+        return Inertial(
+            mass=mass,
+            ixx=ixx,
+            iyy=ixx,
+            izz=ixx
+        )
 
 
 class Mesh(Geometry):
@@ -328,9 +358,19 @@ class Mesh(Geometry):
             except TypeError:
                 x = y = z = self.scale
 
-            scale = "<scale>%s %s %s</scale>" % (nf(x), nf(y), nf(z))
+            scale = "<scale>{x} {y} {z}</scale>".format(
+                x=nf(x),
+                y=nf(y),
+                z=nf(z)
+            )
         else:
             scale = ""
 
-        elements.append("<mesh><uri>%s</uri>%s</mesh>" % (self.uri, scale))
+        elements.append("<mesh>\n"
+                        "  <uri>{uri}</uri>"
+                        "  {scale}\n"
+                        "</mesh>".format(
+            uri=self.uri,
+            scale=scale
+        ))
         return elements

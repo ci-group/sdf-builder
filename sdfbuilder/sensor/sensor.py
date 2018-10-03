@@ -14,7 +14,15 @@ class Sensor(Posable):
     # Sensor tag name
     TAG_NAME = "sensor"
 
-    def __init__(self, name, sensor_type, pose=None, update_rate=None, always_on=True, **kwargs):
+    def __init__(
+            self,
+            name,
+            sensor_type,
+            pose=None,
+            update_rate=None,
+            always_on=True,
+            **kwargs
+    ):
         """
         :param name:
         :param sensor_type:
@@ -42,9 +50,15 @@ class Sensor(Posable):
         """
         els = []
         if self.update_rate is not None:
-            els.append(Element(tag_name="update_rate", body=nf(self.update_rate)))
+            els.append(Element(
+                tag_name="update_rate",
+                body=nf(self.update_rate)
+            ))
 
         if self.always_on is not None:
-            els.append(Element(tag_name="always_on", body="1" if self.always_on else "0"))
+            els.append(Element(
+                tag_name="always_on",
+                body="1" if self.always_on else "0"
+            ))
 
         return super(Sensor, self).render_elements() + els

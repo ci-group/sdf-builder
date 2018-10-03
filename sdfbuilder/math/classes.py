@@ -243,7 +243,7 @@ class Vector3(VectorBase):
         return self.__imul__(1.0 / number)
 
     __rmul__ = __mul__
-    __truediv__ = __div__
+    # __truediv__ = __div__
 
     def cross(self, v1):
         """
@@ -264,14 +264,14 @@ class Vector3(VectorBase):
         """
         return np.dot(self.data, v1.data)
 
-    def parallellism(self, other):
+    def parallelism(self, other):
         """
         Check whether the given vectors parallel, opposite
         or not parallel.
         Returns one of the OPPOSITE / PARALLEL / NOT_PARALLEL
         "constants"
-        :param b:
-        :type b: Vector3
+        :param other:
+        :type other: Vector3
         :return:
         :rtype: int
         """
@@ -332,7 +332,7 @@ class Quaternion(VectorBase):
         :return:
         """
         return 'Quaternion(real={vector[0]}, ' \
-               'imag=<{vector[1]}, {vector[2]}, {vector[3]}>)'.format(
+               'image=<{vector[1]}, {vector[2]}, {vector[3]}>)'.format(
             vector=tuple(self)
         )
 
@@ -345,8 +345,7 @@ class Quaternion(VectorBase):
         if isinstance(other, Quaternion):
             return Quaternion(quaternion_multiply(self, other))
         elif isinstance(other, Vector3):
-            # Get homogeneous rotation matrix and turn vector into
-            # homogeneous vector.
+            # Convert homogeneous rotation matrix into vector
             return self.get_matrix() * other
 
     def __imul__(self, other):

@@ -53,8 +53,8 @@ class Element(object):
 
     def has_element(self, class_type):
         """
-        Returns whether or not this element contains a child
-        element of the given type
+        Returns whether or not this element contains a child element of the
+        given type
         :param class_type:
         :return:
         """
@@ -74,7 +74,9 @@ class Element(object):
             if func(el):
                 elements.append(el)
 
-            if recursive and hasattr(el, 'filter_elements') and callable(el.filter_elements):
+            if recursive and \
+                    hasattr(el, 'filter_elements') and \
+                    callable(el.filter_elements):
                 elements += el.filter_elements(func, recursive=recursive)
 
         return elements
@@ -106,7 +108,8 @@ class Element(object):
             return to_remove
 
         for el in self.elements:
-            if hasattr(el, 'remove_elements') and callable(el.remove_elements):
+            if hasattr(el, 'remove_elements') and \
+                    callable(el.remove_elements):
                 to_remove += el.remove_elements(func, recursive)
 
         return to_remove
@@ -164,12 +167,18 @@ class Element(object):
         if not tag_name:
             return body
         else:
-            attrs = " ".join([a+"="+quoteattr(
-                # Use number format if a number is detected
-                nf(all_attrs[a]) if isinstance(all_attrs[a], float) else str(all_attrs[a])
+            # Use number format if a number is detected
+            attributes = " ".join(
+                [a+"="+quoteattr(nf(all_attrs[a]) if
+                                 isinstance(all_attrs[a], float) else
+                                 str(all_attrs[a])
             ) for a in all_attrs])
-            tag_open = tag_name + " " + attrs if len(attrs) else tag_name
-            return "<%s />" % tag_open if len(body) == 0 else "<%s>%s</%s>" % (tag_open, body, tag_name)
+            tag_open = tag_name + " " + attributes if \
+                len(attributes) else \
+                tag_name
+            return "<{tag} />".format(tag=tag_open) \
+                if len(body) == 0 \
+                else "<{}>{}</{}>".format(tag_open, body, tag_name)
 
     def get_tag_name(self):
         """

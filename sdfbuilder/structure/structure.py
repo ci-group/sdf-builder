@@ -51,8 +51,8 @@ class Structure(Posable):
 
     def render(self):
         """
-        Override render to create a list of sub elements instead of a
-        parent element if the child is a compound.
+        Override render to create a list of sub elements instead of a parent
+        element if the child is a compound.
         :return:
         """
         if not isinstance(self.geometry, CompoundGeometry):
@@ -90,14 +90,15 @@ class Visual(Structure):
         """
         Adds a new Material element to this Visual that has a color
         script for the given color.
-        :param color: One of Gazebo's supported colors, see
-        `https://bitbucket.org/osrf/gazebo/src/52abccccfec20a5f96da9dc0aeda830b48a66269/media/materials/scripts/gazebo.material?at=default`
+        :param color: One of Gazebo's supported colors,
+                      see `https://goo.gl/e3g87N`
         :return:
         """
         if color.index('/') < 0:
             color = "Gazebo/"+color.title()
 
-        self.add_element(Material(body="<script><name>%s</name></script>" % color))
+        self.add_element(Material(
+            body="<script><name>{name}</name></script>".format(name=color)))
 
     def add_color(self, r, g, b, a=1):
         """
@@ -106,10 +107,16 @@ class Visual(Structure):
         specular set to (0.1, 0.1, 0.1, a).
         :return:
         """
-        color = '%.2f %.2f %.2f %.2f' % (r, g, b, a)
-        specular = '0.1 0.1 0.1 %.2f' % a
-        self.add_element(Material(body="<ambient>%s</ambient><diffuse>%s</diffuse><specular>%s</specular>" %
-                                       (color, color, specular)))
+        color = '{r} {g} {b} {a}'.format(r=r, g=g, b=b, a=a)
+        specular = '0.1 0.1 0.1 {a}'.format(a=a)
+        self.add_element(Material(
+            body="<ambient>{ambient}</ambient>\n"
+                 "<diffuse>{diffuse}</diffuse>\n"
+                 "<specular>{specular}</specular>".format(
+                ambient=color,
+                diffuse=color,
+                specular=specular
+            )))
 
 
 class StructureCombination(PosableGroup):

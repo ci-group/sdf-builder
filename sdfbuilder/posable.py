@@ -182,7 +182,8 @@ class Posable(Element):
 
     def to_parent_direction(self, vec):
         """
-        Returns the given direction vector / rotation quaternion relative to the parent frame.
+        Returns the given direction vector/rotation quaternion relative to
+        the parent frame
         :param vec: Vector or quaternion in the local frame
         :type vec: Vector3|Quaternion
         :return:
@@ -192,7 +193,8 @@ class Posable(Element):
 
     def to_local_direction(self, vec):
         """
-        Returns the given direction vector / rotation quaternion relative to the local frame
+        Returns the given direction vector / rotation quaternion relative to
+        the local frame
         :param vec: Direction vector or orientation in the parent frame
         :type vec: Vector3|Quaternion
         :return:
@@ -263,11 +265,11 @@ class Posable(Element):
         The two posables need to be in the same parent frame
         for this to work.
 
-        You can choose to specify the positions and orientations either in the parent
-        frame or in the child frame using the final argument to this method.
-        Be aware that representing orientation vectors in the parent frame
-        merely means that they are already rotated with respect to their parent,
-        not translated.
+        You can choose to specify the positions and orientations either in
+        the parent frame or in the child frame using the final argument to
+        this method. Be aware that representing orientation vectors in the
+        parent frame merely means that they are already rotated with respect
+        to their parent, not translated.
         :param my:
         :type my: Vector3
         :param my_normal:
@@ -287,10 +289,12 @@ class Posable(Element):
         :return:
         """
         if not my_normal.orthogonal_to(my_tangent):
-            raise ValueError("`my_normal` and `my_tangent` should be orthogonal.")
+            raise ValueError(
+                "`my_normal` and `my_tangent` should be orthogonal.")
 
         if not at_normal.orthogonal_to(at_tangent):
-            raise ValueError("`at_normal` and `at_tangent` should be orthogonal.")
+            raise ValueError(
+                "`at_normal` and `at_tangent` should be orthogonal.")
 
         # Convert all vectors to local frame if not currently there,
         # we will need this as reference after rotation.
@@ -303,19 +307,20 @@ class Posable(Element):
             at_normal = of.to_local_direction(at_normal)
             at_tangent = of.to_local_direction(at_tangent)
 
-        # This explains how to do the alignment easily:
-        # http://stackoverflow.com/questions/21828801/how-to-find-correct-rotation-from-one-vector-to-another
+        # This explains how to do the alignment easily: https://goo.gl/RSchkF
 
-        # We define coordinate systems in which "normal", "tangent" and "normal x tangent" are
-        # the x, y and z axes ("normal x tangent" is the cross product). We then determine two
-        # rotation matrices, one for the rotation of the standard basis to "my" (R1):
+        # We define coordinate systems in which "normal", "tangent" and
+        # "normal x tangent" are the x, y and z axes ("normal x tangent" is
+        # the cross product). We then determine two rotation matrices,
+        # one for the rotation of the standard basis to "my" (R1):
         my_x = my_normal.normalized()
         my_y = my_tangent.normalized()
         my_z = my_x.cross(my_y)
 
-        # Note that we are going to determine an absolute rotation, so we need the vectors
-        # in the local frame rather than in the parent frame. We also determine a rotation
-        # matrix for the rotation of "at" (R2):
+        # Note that we are going to determine an absolute rotation,
+        # so we need the vectors in the local frame rather than in the parent
+        #  frame. We also determine a rotation matrix for the rotation of
+        # "at" (R2):
         at_x = of.to_parent_direction(-at_normal).normalized()
         at_y = of.to_parent_direction(at_tangent).normalized()
         at_z = at_x.cross(at_y)
@@ -347,13 +352,15 @@ class Posable(Element):
         my_parent_normal = self.to_parent_direction(my_normal)
         at_parent_normal = of.to_parent_direction(-at_normal)
         if not my_parent_normal.parallel_to(at_parent_normal):
-            print("Vector angle: %f" % my_parent_normal.angle(at_parent_normal), file=sys.stderr)
+            print("Vector angle: {}".format(
+                my_parent_normal.angle(at_parent_normal)), file=sys.stderr)
             assert False, "Normal vectors failed to align!"
 
         parent_tangent = self.to_parent_direction(my_tangent)
         at_parent_tangent = of.to_parent_direction(at_tangent)
         if not parent_tangent.parallel_to(at_parent_tangent):
-            print("Vector angle: %f" % parent_tangent.angle(at_parent_tangent), file=sys.stderr)
+            print("Vector angle: {}".format(
+                parent_tangent.angle(at_parent_tangent)), file=sys.stderr)
             assert False, "Tangent vectors failed to align!"
 
         # Finally, translate so that `my` lands at `at`
@@ -438,14 +445,15 @@ class PosableGroup(Posable):
             # Get the position and rotation of the child relative
             # to this posable's root (i.e. as if the posable was in [0, 0]
             # with no rotation)
-            orig_position = inv_rotation * (posable.get_position() - root_position)
+            orig_position = inv_rotation * \
+                            (posable.get_position() - root_position)
 
-            # The original rotation follows from multiplying the child's rotation
-            # with this group's inverse rotation
+            # The original rotation follows from multiplying the child's
+            # rotation with this group's inverse rotation
             orig_rotation = inv_rotation * posable.get_rotation()
 
-            # New position means rotating the original point according to the new
-            # rotation, and adding the current position
+            # New position means rotating the original point according to the
+            #  new rotation, and adding the current position
             new_position = (rotation * orig_position) + root_position
 
             # New rotation is acquired by multiplying the new rotation

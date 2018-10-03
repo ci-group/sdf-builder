@@ -64,18 +64,20 @@ class Friction(Element):
 
         if self.fdir1 is not None:
             x, y, z = self.fdir1
-            fdir = "%s %s %s" % (nf(x), nf(y), nf(z))
-            ode.add_element("<fdir1>%s</fdir1>" % fdir)
-            bullet.add_element("<fdir1>%s</fdir1>" % fdir)
+            fdir = "{x} {y} {z}".format(x=nf(x), y=nf(y), z=nf(z))
+            ode.add_element("<fdir1>{}</fdir1>".format(fdir))
+            bullet.add_element("<fdir1>{}</fdir1>".format(fdir))
 
         if self.slip1 is not None:
-            ode.add_element("<slip1>%s</slip1>" % nf(self.slip1))
+            ode.add_element("<slip1>{}</slip1>".format(nf(self.slip1)))
 
         if self.slip2 is not None:
-            ode.add_element("<slip2>%s</slip2>" % nf(self.slip2))
+            ode.add_element("<slip2>{}</slip2>".format(nf(self.slip2)))
 
         if self.rolling_friction is not None:
-            bullet.add_element("<rolling_friction>%s</rolling_friction>" % nf(self.rolling_friction))
+            bullet.add_element("<rolling_friction>{}</rolling_friction>".format(
+                nf(self.rolling_friction)
+            ))
 
         if len(ode.elements):
             elements.append(ode)

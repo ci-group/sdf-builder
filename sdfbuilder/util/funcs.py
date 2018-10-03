@@ -3,8 +3,6 @@ General utility functions
 """
 from __future__ import absolute_import
 
-from ..math.classes import EPSILON
-
 
 def number_format(number):
     """
@@ -14,4 +12,4 @@ def number_format(number):
     :param number:
     :return: String representation of the number
     """
-    return "%e" % number
+    return "{num}".format(num=number)

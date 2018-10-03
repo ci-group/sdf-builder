@@ -280,7 +280,7 @@ class Link(Posable):
         :type visual: bool
         :param inertia: Set box inertia
         :type inertia: bool
-        :param name_prefix: Prefix for element names (before "visual" / "collision")
+        :param name_prefix: Prefix for element names (before visual/collision)
         :type name_prefix: str
         :return: List of all created items
         """
