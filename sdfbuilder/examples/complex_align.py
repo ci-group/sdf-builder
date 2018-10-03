@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import print_function
 
 from sdfbuilder import Link, PosableGroup, SDF, Model
 from sdfbuilder.math import Vector3
@@ -90,4 +91,4 @@ if __name__ == '__main__':
     model.add_element(group)
     model.add_element(link2)
     sdf.add_element(model)
-    print(str(sdf))
+    print("{}".format(sdf))

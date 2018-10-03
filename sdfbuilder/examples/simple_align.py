@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import sys
 from sdfbuilder import Link, Model, SDF
 from sdfbuilder.math import Vector3
 
@@ -31,4 +30,4 @@ if __name__ == '__main__':
     model.add_element(link1)
     model.add_element(link2)
     sdf.add_element(model)
-    print(str(sdf))
+    print("{}".format(sdf))

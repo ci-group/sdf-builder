@@ -2,9 +2,11 @@ from __future__ import absolute_import
 from __future__ import division
 
 import numpy as np
-from .transformations import quaternion_multiply, quaternion_matrix, quaternion_from_matrix, euler_from_quaternion, \
-    quaternion_about_axis, quaternion_conjugate, quaternion_inverse, quaternion_from_euler
 import itertools
+
+from .transformations import quaternion_multiply, quaternion_matrix, \
+    quaternion_from_matrix, euler_from_quaternion, quaternion_about_axis, \
+    quaternion_conjugate, quaternion_inverse, quaternion_from_euler
 
 # Epsilon value used for zero comparisons
 EPSILON = 1e-5
@@ -35,7 +37,9 @@ class VectorBase(object):
             self.data = np.array(args, dtype=np.float_, copy=True)
 
         assert len(self.data) == self.LENGTH, \
-            "Invalid data size %d, expecting %d" % (len(self.data), self.LENGTH)
+            "Invalid data size {received}, expecting {expected}".format(
+                received=len(self.data),
+                expected=self.LENGTH)
 
     def __copy__(self):
         """
@@ -72,7 +76,8 @@ class VectorBase(object):
         try:
             idx = self.ATTRS.index(item)
         except:
-            raise AttributeError("Unknown attribute `%s`" % item)
+            raise AttributeError("Unknown attribute `{attribute}`".format(
+                attribute=item))
 
         return self.data[idx]
 
@@ -136,8 +141,7 @@ class VectorBase(object):
 
 class Vector3(VectorBase):
     """
-    Defines an abstract vector data type as a wrapper
-    over a numpy array.
+    Defines an abstract vector data type as a wrapper over a numpy array.
     """
     LENGTH = 3
     ATTRS = 'xyz'
@@ -161,7 +165,9 @@ class Vector3(VectorBase):
         """
         :return:
         """
-        return 'Vector3(%e, %e, %e)' % tuple(self)
+        return 'Vector3({vector[0]}, {vector[1]}, {vector[2]})'.format(
+            vector=tuple(self)
+        )
 
     def __add__(self, other):
         """
@@ -170,14 +176,14 @@ class Vector3(VectorBase):
         :return:
         """
         assert len(self) == len(other), "Cannot add different length vectors."
-        return Vector3([x + y for x, y in itertools.izip(self, other)])
+        return Vector3([x + y for x, y in itertools.zip(self, other)])
 
     def __sub__(self, other):
         """
         :param other:
         :return:
         """
-        return Vector3([x - y for x, y in itertools.izip(self, other)])
+        return Vector3([x - y for x, y in itertools.zip(self, other)])
 
     __radd__ = __add__
     __rsub__ = __sub__
@@ -220,7 +226,7 @@ class Vector3(VectorBase):
         self[2] *= number
         return self
 
-    def __div__(self, number):
+    def __truediv__(self, number):
         """
         :param number:
         :type number: float
@@ -228,7 +234,7 @@ class Vector3(VectorBase):
         """
         return self.__mul__(1.0 / number)
 
-    def __idiv__(self, number):
+    def __itruediv__(self, number):
         """
         :param number:
         :type number: float
@@ -325,7 +331,10 @@ class Quaternion(VectorBase):
         """
         :return:
         """
-        return 'Quaternion(real=%e, imag=<%e, %e, %e>)' % tuple(self)
+        return 'Quaternion(real={vector[0]}, ' \
+               'imag=<{vector[1]}, {vector[2]}, {vector[3]}>)'.format(
+            vector=tuple(self)
+        )
 
     def __mul__(self, other):
         """
@@ -473,7 +482,10 @@ class RotationMatrix(object):
             vec = np.array([other.x, other.y, other.z, 1])
             return Vector3(np.dot(self.data, vec)[:3])
         else:
-            raise ValueError("Unknown multiplication between `RotationMatrix` and `%s`" % other.__class__)
+            raise ValueError(
+                "Unknown multiplication between `RotationMatrix` and `{ocls}`".
+                    format(ocl=other.__class__)
+            )
 
     def __imul__(self, other):
         """
