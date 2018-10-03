@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from ..link import Link
 from ..posable import Posable
 from ..element import Element

@@ -1,7 +1,9 @@
+from __future__ import absolute_import
 from __future__ import print_function
+
 import sys
 
-from physics.inertial import transform_inertia_tensor
+from .physics.inertial import transform_inertia_tensor
 from .math import Vector3
 from .posable import Posable
 from .element import Element
@@ -42,7 +44,10 @@ class Link(Posable):
             elements.append(self.inertial)
 
         if self.self_collide is not None:
-            elements.append(Element(tag_name="self_collide", body=str(self.self_collide)))
+            elements.append(Element(
+                tag_name="self_collide",
+                body=str(self.self_collide)
+            ))
 
         return elements
 
@@ -57,7 +62,7 @@ class Link(Posable):
 
     def make_color_script(self, color):
         """
-        Applies `add_color_script` with the given color to all visuals in this link.
+        Apply `add_color_script` with a given color to all visuals in this link
         :param color:
         :type color: str
         :return:
@@ -77,7 +82,17 @@ class Link(Posable):
         for visual in self.get_elements_of_type(Visual):
             visual.add_color(r, g, b, a)
 
-    def make_box(self, mass, x, y, z, collision=True, visual=True, inertia=True, name_prefix=""):
+    def make_box(
+            self,
+            mass,
+            x,
+            y,
+            z,
+            collision=True,
+            visual=True,
+            inertia=True,
+            name_prefix=""
+    ):
         """
         Shortcut method to `make_geometry` with a box.
 
@@ -91,11 +106,26 @@ class Link(Posable):
         :param name_prefix:
         :return: Newly created visual and collision elements, if applicable
         """
-        return self.make_geometry(Box(x, y, z, mass), collision=collision,
-                                  visual=visual, inertia=inertia, name_prefix=name_prefix)
+        return self.make_geometry(
+            geometry=Box(x, y, z, mass),
+            collision=collision,
+            visual=visual,
+            inertia=inertia,
+            name_prefix=name_prefix
+        )
 
-    def make_cylinder(self, mass, radius, length, collision=True, visual=True,
-                      inertia=True, name_prefix="", tube=False, r1=None):
+    def make_cylinder(
+            self,
+            mass,
+            radius,
+            length,
+            collision=True,
+            visual=True,
+            inertia=True,
+            name_prefix="",
+            tube=False,
+            r1=None
+    ):
         """
         Shortcut method to `make_geometry` with a cylinder.
         :param mass:
@@ -109,11 +139,24 @@ class Link(Posable):
         :param r1: If `tube` is `True`, inner radius of the tube
         :return:
         """
-        return self.make_geometry(Cylinder(radius, length, mass=mass, tube=tube, r1=r1), collision=collision,
-                                  visual=visual, inertia=inertia, name_prefix=name_prefix)
+        return self.make_geometry(
+            geometry=Cylinder(radius, length, mass=mass, tube=tube, r1=r1),
+            collision=collision,
+            visual=visual,
+            inertia=inertia,
+            name_prefix=name_prefix
+        )
 
-    def make_sphere(self, mass, radius, collision=True, visual=True, inertia=True,
-                    name_prefix="", solid=True):
+    def make_sphere(
+            self,
+            mass,
+            radius,
+            collision=True,
+            visual=True,
+            inertia=True,
+            name_prefix="",
+            solid=True
+    ):
         """
         Shortcut method to `make_geometry` with a cylinder.
         :param mass:
@@ -125,8 +168,13 @@ class Link(Posable):
         :param solid: Whether the sphere is solid
         :return:
         """
-        return self.make_geometry(Sphere(radius, mass=mass, solid=solid), collision=collision,
-                                  visual=visual, inertia=inertia, name_prefix=name_prefix)
+        return self.make_geometry(
+            geometry=Sphere(radius, mass=mass, solid=solid),
+            collision=collision,
+            visual=visual,
+            inertia=inertia,
+            name_prefix=name_prefix
+        )
 
     def calculate_inertial(self):
         """
@@ -140,7 +188,8 @@ class Link(Posable):
         :return:
         """
         if not np.allclose(self.get_center_of_mass().norm(), 0):
-            print("WARNING: calculating inertial for link with nonzero center of mass.", file=sys.stderr)
+            print("WARNING: calculating inertial for link with nonzero " \
+                   "center of mass.", file=sys.stderr)
 
         collisions = self.get_elements_of_type(Collision, recursive=True)
         i_final = np.zeros((3, 3))
@@ -164,7 +213,7 @@ class Link(Posable):
         """
         Calculate the center of mass of all the collisions inside
         this link.
-        :return: The center of mass as determined by all the collision geometries
+        :return: The center of mass as determined by the collision geometries
         :rtype: Vector3
         """
         collisions = self.get_elements_of_type(Collision, recursive=True)
@@ -182,26 +231,32 @@ class Link(Posable):
 
         return com
 
-    def align_center_of_mass(self, types=(Posable,), recursive=False, elements=None):
+    def align_center_of_mass(
+            self,
+            types=(Posable,),
+            recursive=False,
+            elements=None
+    ):
         """
         Aligns all elements within this link to get the center of mass
         to be at the link's origin. By default, all first level `Posable`
-        elements are moved, but this can be changed depending on what is needed.
+        elements are moved, but this can be changed depending on what is needed
 
         :param types: Element types to search for and translate,
                       first argument to `get_elements_of_type`. Defaults to
                       any posable.
         :type types: class-or-tuple
-        :param recursive: Second argument to `get_elements_of_type`. Defaults to false.
+        :param recursive: Second argument to `get_elements_of_type`
         :type recursive: bool
-        :param elements: Direct iterable of elements to apply transformation to if standard
-                         `get_elements_of_type` does not apply.
+        :param elements: Direct iterable of elements to apply transformation
+                         to if standard `get_elements_of_type` does not apply
         :type elements: iterable
         :return:
         :rtype: The translation used on all elements
         """
         translation = -self.get_center_of_mass()
-        elms = self.get_elements_of_type(types, recursive=recursive) if elements is None else elements
+        elms = self.get_elements_of_type(types, recursive=recursive) \
+            if elements is None else elements
         for el in elms:
             el.translate(translation)
 
@@ -235,16 +290,25 @@ class Link(Posable):
             # We're given the inertia tensor as it is relative to the geometry's
             # center of mass, and we need it relative to the origin.
             rotation = geometry.get_rotation().conjugated()
-            displacement = -geometry.to_parent_frame(geometry.get_center_of_mass())
-            self.inertial = geometry.get_inertial().transformed(displacement, rotation)
+            displacement = -geometry.to_parent_frame(
+                point=geometry.get_center_of_mass())
+            self.inertial = geometry.get_inertial().transformed(
+                displacement=displacement,
+                rotation=rotation)
 
         if collision:
-            col = Collision(name=name_prefix+"collision", geometry=geometry)
+            col = Collision(
+                name=name_prefix+"collision",
+                geometry=geometry
+            )
             return_value.append(col)
             self.add_element(col)
 
         if visual:
-            vis = Visual(name=name_prefix+"visual", geometry=geometry)
+            vis = Visual(
+                name=name_prefix+"visual",
+                geometry=geometry
+            )
             return_value.append(vis)
             self.add_element(vis)
 

@@ -1,4 +1,6 @@
+from __future__ import absolute_import
 from __future__ import division
+
 import numpy as np
 from .transformations import quaternion_multiply, quaternion_matrix, quaternion_from_matrix, euler_from_quaternion, \
     quaternion_about_axis, quaternion_conjugate, quaternion_inverse, quaternion_from_euler

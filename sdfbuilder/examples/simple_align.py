@@ -1,4 +1,6 @@
+from __future__ import absolute_import
 from __future__ import print_function
+
 import sys
 from sdfbuilder import Link, Model, SDF
 from sdfbuilder.math import Vector3

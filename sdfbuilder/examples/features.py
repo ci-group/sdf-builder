@@ -1,5 +1,8 @@
+from __future__ import absolute_import
+
 from sdfbuilder import SDF, Model, Link, PosableGroup
-from sdfbuilder.structure import Box, Cylinder, Collision, Visual, StructureCombination
+from sdfbuilder.structure import Box, Cylinder, Collision, Visual, \
+    StructureCombination
 from sdfbuilder.math import Vector3
 from sdfbuilder.joint import Joint
 import math
@@ -18,9 +21,9 @@ box_vis = Visual("box_visual", box_geom.copy())
 # around together.
 box = PosableGroup(elements=[box_col, box_vis])
 
-# Now create a Cylinder visual/collision combi. You didn't think that the above would
-# be the easiest way to do it now did you? The above was just to show you
-# how that works.
+# Now create a Cylinder visual/collision combi. You didn't think that the
+# above would be the easiest way to do it now did you? The above was just to
+# show you how that works.
 cyl_geom = Cylinder(radius=0.25, length=0.5, mass=0.1)
 cylinder = StructureCombination("cylinder", cyl_geom)
 
@@ -61,8 +64,8 @@ link.calculate_inertial()
 # going to work after the rotation).
 link.rotate_around(Vector3(1, 0, 0), math.radians(45), relative_to_child=False)
 
-# Okay, not sure what this is supposed to be, but let's another wheel-like cylinder in
-# a new link, and connect them with joints
+# Okay, not sure what this is supposed to be, but let's another wheel-like
+# cylinder in a new link, and connect them with joints
 wheel_geom = Cylinder(0.75, 0.1, mass=0.1)
 wheel = StructureCombination("wheel", wheel_geom)
 wheel_link = Link("my_wheel", elements=[wheel])

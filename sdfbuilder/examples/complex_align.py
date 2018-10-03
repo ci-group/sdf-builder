@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from sdfbuilder import Link, PosableGroup, SDF, Model
 from sdfbuilder.math import Vector3
 from math import pi

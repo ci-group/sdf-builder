@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from .element import Element
 from .model import Model
 from .link import Link

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from ..posable import Posable
 from ..element import Element
 from ..util import number_format as nf

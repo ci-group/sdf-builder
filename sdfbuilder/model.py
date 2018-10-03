@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from .posable import Posable
 from .joint import Joint
 

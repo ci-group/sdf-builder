@@ -1,6 +1,8 @@
 """
 Collision / visual and geometry like classes
 """
+from __future__ import absolute_import
+
 from ..posable import Posable, PosableGroup
 from ..element import Element
 from .geometries import Geometry, CompoundGeometry

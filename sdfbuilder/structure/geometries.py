@@ -1,7 +1,9 @@
 """
 Simple geometries such as box, cylinder and sphere.
 """
+from __future__ import absolute_import
 from __future__ import division
+
 from ..math import Vector3
 from ..posable import Posable, PosableGroup
 from ..util import number_format as nf

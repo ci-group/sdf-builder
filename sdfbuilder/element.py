@@ -1,6 +1,8 @@
 """
 Basic SDF builder element.
 """
+from __future__ import absolute_import
+
 from xml.sax.saxutils import quoteattr
 from .util import number_format as nf
 import copy
